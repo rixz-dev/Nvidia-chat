@@ -3,81 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NVIDIA NIM Chat · DeepSeek V3.2</title>
+    <title>NVIDIA NIM · DeepSeek V3.2</title>
+    <!-- Font & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* --- CSS sama seperti versi sebelumnya, hanya penyesuaian kecil --- */
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:#0A0A0A; color:#FFF; height:100vh; display:flex; flex-direction:column; overflow:hidden; font-weight:500; }
-        .app-header { background:#0F0F0F; padding:12px 16px; border-bottom:1px solid rgba(255,80,0,0.15); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-        .header-left { display:flex; align-items:center; gap:12px; }
-        .hamburger-btn { background:none; border:none; color:#FF5500; font-size:24px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; }
-        .header-title { display:flex; align-items:baseline; gap:6px; }
-        .header-title h1 { font-size:20px; font-weight:800; background:linear-gradient(135deg,#FF5500,#FF8A00); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .model-badge { font-size:12px; font-weight:700; color:#FF5500; background:rgba(255,80,0,0.1); padding:2px 8px; border-radius:30px; border:1px solid rgba(255,80,0,0.2); }
-        .icon-btn { background:none; border:none; color:#FF5500; font-size:20px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; }
-        .sidebar-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; opacity:0; visibility:hidden; transition:0.25s; backdrop-filter:blur(3px); }
-        .sidebar-overlay.open { opacity:1; visibility:visible; }
-        .sidebar { position:fixed; top:0; left:0; bottom:0; width:85%; max-width:320px; background:#111; z-index:1001; transform:translateX(-100%); transition:transform 0.3s; display:flex; flex-direction:column; box-shadow:4px 0 20px #000; border-right:1px solid #222; }
-        .sidebar.open { transform:translateX(0); }
-        .sidebar-header { padding:20px 16px; border-bottom:1px solid #222; display:flex; align-items:center; justify-content:space-between; }
-        .sidebar-header h3 { font-weight:700; font-size:18px; color:#FF5500; }
-        .sidebar-content { flex:1; overflow-y:auto; padding:16px; }
-        .config-section { margin-bottom:28px; }
-        .config-label { display:block; font-weight:700; font-size:14px; color:#FF8A00; margin-bottom:8px; text-transform:uppercase; }
-        .config-input { width:100%; background:#1A1A1A; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-weight:500; font-size:14px; margin-bottom:12px; }
-        .param-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-        .param-row label { font-weight:600; font-size:14px; color:#CCC; }
-        .param-row input { width:80px; background:#1A1A1A; border:1px solid #333; border-radius:8px; padding:8px 10px; color:#fff; font-weight:600; text-align:right; }
-        .history-item { background:#1A1A1A; border-radius:10px; padding:12px; margin-bottom:8px; border-left:3px solid #FF5500; cursor:pointer; }
-        .new-chat-btn { background:#FF5500; color:#000; border:none; font-weight:700; padding:12px 16px; border-radius:30px; width:100%; font-size:16px; margin:16px 0; cursor:pointer; }
-        .chat-container { flex:1; overflow-y:auto; padding:16px 12px; display:flex; flex-direction:column; gap:16px; background:#0A0A0A; }
-        .message { display:flex; flex-direction:column; max-width:90%; animation:fadeIn 0.2s; }
-        .message.user { align-self:flex-end; }
-        .message.assistant { align-self:flex-start; }
-        .message-content { padding:14px 16px; border-radius:22px; font-weight:500; line-height:1.5; word-wrap:break-word; white-space:pre-wrap; }
-        .user .message-content { background:#FF5500; color:#000; border-bottom-right-radius:6px; font-weight:600; }
-        .assistant .message-content { background:#1A1A1A; border:1px solid #2A2A2A; border-bottom-left-radius:6px; color:#EEE; }
-        .message-meta { font-size:11px; color:#777; margin-top:5px; padding:0 8px; font-weight:600; }
-        .thinking-badge { display:inline-block; background:#FF5500; color:#000; font-size:10px; font-weight:800; padding:2px 10px; border-radius:30px; margin-right:8px; text-transform:uppercase; }
-        .file-attachment { margin-top:8px; background:#1A1A1A; padding:8px 12px; border-radius:16px; display:inline-flex; align-items:center; gap:8px; font-size:13px; border:1px dashed #FF5500; color:#FF8A00; }
-        .input-area { background:#0F0F0F; border-top:1px solid #222; padding:12px 16px; flex-shrink:0; }
-        .file-preview-container { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-        .file-preview { background:#1A1A1A; padding:6px 12px; border-radius:30px; font-size:12px; font-weight:600; color:#FF8A00; display:inline-flex; align-items:center; gap:6px; border:1px solid #333; }
-        .input-wrapper { display:flex; align-items:flex-end; gap:8px; }
-        .message-input { flex:1; background:#1A1A1A; border:1.5px solid #2A2A2A; border-radius:28px; padding:14px 18px; color:#fff; font-weight:500; font-size:15px; max-height:120px; resize:none; font-family:inherit; }
-        .action-buttons { display:flex; gap:8px; margin-top:10px; justify-content:space-between; }
-        .left-actions { display:flex; gap:8px; }
-        .mode-btn { background:#1A1A1A; border:1px solid #2A2A2A; color:#CCC; font-weight:700; padding:8px 14px; border-radius:30px; font-size:13px; display:flex; align-items:center; gap:6px; cursor:pointer; }
-        .mode-btn.active { background:#FF5500; color:#000; border-color:#FF5500; }
-        .send-btn { background:#FF5500; border:none; color:#000; font-weight:800; padding:10px 20px; border-radius:40px; font-size:15px; display:flex; align-items:center; gap:8px; cursor:pointer; }
-        .typing-indicator { display:flex; gap:6px; padding:16px; background:#1A1A1A; border-radius:22px; width:fit-content; }
-        .typing-dot { width:10px; height:10px; background:#FF5500; border-radius:50%; animation:bounce 1.4s infinite; }
-        @keyframes bounce { 0%,60%,100%{ transform:translateY(0); } 30%{ transform:translateY(-10px); } }
-        .generated-file-link { background:#1A1A1A; border-radius:16px; padding:12px; margin-top:12px; border:1px solid #FF5500; }
-        .download-link { color:#FF8A00; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:8px; cursor:pointer; }
-        /* API key section di sidebar sekarang hidden karena disimpan di backend */
-        .note { color:#AAA; font-size:12px; margin-top:8px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0A0A0A;
+            color: #FFFFFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-weight: 500;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header */
+        .app-header {
+            background: #0F0F0F;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 80, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: #FF5500;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .hamburger-btn:active {
+            background: rgba(255, 80, 0, 0.1);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .header-title h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #FF5500, #FF8A00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .model-badge {
+            font-size: 12px;
+            font-weight: 700;
+            color: #FF5500;
+            background: rgba(255, 80, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 80, 0, 0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #FF5500;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:active {
+            background: rgba(255, 80, 0, 0.1);
+        }
+
+        /* Sidebar (Hamburger) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.25s;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 85%;
+            max-width: 320px;
+            background: #111111;
+            z-index: 1001;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.2,0.9,0.4,1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.8);
+            border-right: 1px solid #222;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: #111;
+            z-index: 2;
+        }
+
+        .sidebar-header h3 {
+            font-weight: 700;
+            font-size: 18px;
+            color: #FF5500;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 16px;
+        }
+
+        .config-section {
+            margin-bottom: 28px;
+        }
+
+        .config-label {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            color: #FF8A00;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .config-input {
+            width: 100%;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: border 0.2s;
+        }
+
+        .config-input:focus {
+            outline: none;
+            border-color: #FF5500;
+        }
+
+        .param-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .param-row label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #CCC;
+        }
+
+        .param-row input {
+            width: 80px;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: white;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .new-chat-btn {
+            background: #FF5500;
+            color: black;
+            border: none;
+            font-weight: 700;
+            padding: 12px 16px;
+            border-radius: 30px;
+            width: 100%;
+            font-size: 16px;
+            margin: 8px 0 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .new-chat-btn:active {
+            background: #FF7700;
+        }
+
+        .history-item {
+            background: #1A1A1A;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #FF5500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-item:active {
+            background: #222;
+        }
+
+        .history-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #FF8A00;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-preview {
+            font-size: 12px;
+            color: #AAA;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .clear-history-btn {
+            background: none;
+            border: 1px solid #FF5500;
+            color: #FF5500;
+            padding: 10px;
+            border-radius: 20px;
+            width: 100%;
+            font-weight: 700;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .clear-history-btn:active {
+            background: #FF5500;
+            color: black;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #0A0A0A;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 90%;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+        }
+
+        .message-content {
+            padding: 14px 16px;
+            border-radius: 22px;
+            font-weight: 500;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .user .message-content {
+            background: #FF5500;
+            color: black;
+            border-bottom-right-radius: 6px;
+            font-weight: 600;
+        }
+
+        .assistant .message-content {
+            background: #1A1A1A;
+            border: 1px solid #2A2A2A;
+            border-bottom-left-radius: 6px;
+            color: #EEE;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: #777;
+            margin-top: 5px;
+            padding: 0 8px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .thinking-badge {
+            display: inline-block;
+            background: #FF5500;
+            color: black;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 30px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        .file-attachment {
+            margin-top: 8px;
+            background: #1A1A1A;
+            padding: 8px 12px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            border: 1px dashed #FF5500;
+            color: #FF8A00;
+            font-weight: 600;
+        }
+
+        /* Input Area */
+        .input-area {
+            background: #0F0F0F;
+            border-top: 1px solid #222;
+            padding: 12px 16px;
+            flex-shrink: 0;
+        }
+
+        .file-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-preview {
+            background: #1A1A1A;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #FF8A00;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #333;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: #FF5500;
+            font-weight: 800;
+            cursor: pointer;
+            margin-left: 6px;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .message-input {
+            flex: 1;
+            background: #1A1A1A;
+            border: 1.5px solid #2A2A2A;
+            border-radius: 28px;
+            padding: 14px 18px;
+            color: white;
+            font-weight: 500;
+            font-size: 15px;
+            max-height: 120px;
+            resize: none;
+            font-family: inherit;
+            line-height: 1.4;
+            transition: border 0.2s;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #FF5500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            justify-content: space-between;
+        }
+
+        .left-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            background: #1A1A1A;
+            border: 1px solid #2A2A2A;
+            color: #CCC;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #FF5500;
+            color: black;
+            border-color: #FF5500;
+        }
+
+        .send-btn {
+            background: #FF5500;
+            border: none;
+            color: black;
+            font-weight: 800;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(255,80,0,0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Loading indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 16px;
+            background: #1A1A1A;
+            border-radius: 22px;
+            width: fit-content;
+            align-self: flex-start;
+        }
+
+        .typing-dot {
+            width: 10px;
+            height: 10px;
+            background: #FF5500;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Generated file link */
+        .generated-file-link {
+            background: #1A1A1A;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid #FF5500;
+        }
+
+        .download-link {
+            color: #FF8A00;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Info note di sidebar */
+        .sidebar-note {
+            color: #AAA;
+            font-size: 12px;
+            margin-top: 12px;
+            padding: 8px;
+            background: #1A1A1A;
+            border-radius: 8px;
+        }
+
+        /* Mobile first sudah default, desktop adjustment */
+        @media (min-width: 768px) {
+            .app-header { padding: 12px 24px; }
+            .chat-container { padding: 20px 24px; }
+            .input-area { padding: 16px 24px; }
+        }
     </style>
 </head>
 <body>
 
-<!-- SIDEBAR (Hamburger) -->
+<!-- SIDEBAR (Hamburger Menu) -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>KONFIGURASI</h3>
-        <button class="icon-btn" id="closeSidebarBtn"><i class="fas fa-times"></i></button>
+        <button class="icon-btn" id="closeSidebarBtn" style="color:#FF5500;"><i class="fas fa-times"></i></button>
     </div>
     <div class="sidebar-content">
-        <!-- API Key tidak diperlukan di frontend karena sudah di backend -->
+        <!-- Model ID -->
         <div class="config-section">
             <label class="config-label">MODEL ID</label>
             <input type="text" class="config-input" id="modelIdInput" value="deepseek-ai/deepseek-v3.2" placeholder="deepseek-ai/deepseek-v3.2">
         </div>
+
+        <!-- Parameter -->
         <div class="config-section">
             <label class="config-label">PARAMETER</label>
             <div class="param-row">
@@ -93,18 +614,25 @@
                 <input type="number" id="maxTokensInput" min="1" max="8192" value="8192">
             </div>
         </div>
-        <button class="new-chat-btn" id="newChatSidebarBtn"><i class="fas fa-plus-circle"></i> NEW CHAT</button>
-        <div class="config-section">
-            <label class="config-label">RIWAYAT CHAT</label>
-            <div id="historyList"></div>
-            <button id="clearHistoryBtn" style="background:none;border:1px solid #FF5500;color:#FF5500;padding:8px;border-radius:20px;width:100%;font-weight:700;margin-top:10px;">HAPUS SEMUA</button>
-        </div>
+
+        <!-- Personalisasi (System Prompt) -->
         <div class="config-section">
             <label class="config-label">PERSONALISASI</label>
             <input type="text" class="config-input" id="systemPromptInput" placeholder="System prompt (opsional)" value="">
         </div>
-        <div class="note">
-            <i class="fas fa-shield-alt"></i> API Key dikelola di server. Aman.
+
+        <!-- New Chat & History -->
+        <button class="new-chat-btn" id="newChatSidebarBtn"><i class="fas fa-plus-circle"></i> NEW CHAT</button>
+
+        <div class="config-section">
+            <label class="config-label">RIWAYAT CHAT</label>
+            <div id="historyList"></div>
+            <button class="clear-history-btn" id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> HAPUS SEMUA</button>
+        </div>
+
+        <div class="sidebar-note">
+            <i class="fas fa-shield-alt"></i> API Key dikelola di server.<br>
+            <i class="fas fa-code-branch"></i> Model: deepseek-ai/deepseek-v3.2
         </div>
     </div>
 </aside>
@@ -112,7 +640,9 @@
 <!-- HEADER -->
 <header class="app-header">
     <div class="header-left">
-        <button class="hamburger-btn" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="header-title">
             <h1>NVIDIA NIM</h1>
             <span class="model-badge" id="headerModelBadge">deepseek-v3.2</span>
@@ -124,7 +654,9 @@
 </header>
 
 <!-- CHAT DISPLAY -->
-<div class="chat-container" id="chatContainer"></div>
+<div class="chat-container" id="chatContainer">
+    <!-- Pesan akan dirender di sini -->
+</div>
 
 <!-- INPUT AREA -->
 <div class="input-area">
@@ -134,12 +666,20 @@
     </div>
     <div class="action-buttons">
         <div class="left-actions">
-            <button class="mode-btn" id="thinkingModeBtn"><i class="fas fa-brain"></i> THINKING</button>
-            <button class="mode-btn" id="toolsModeBtn"><i class="fas fa-tools"></i> TOOLS</button>
-            <button class="mode-btn" id="uploadFileBtn"><i class="fas fa-paperclip"></i></button>
-            <input type="file" id="fileInput" multiple style="display:none;">
+            <button class="mode-btn" id="thinkingModeBtn" title="Aktifkan thinking mode">
+                <i class="fas fa-brain"></i> THINKING
+            </button>
+            <button class="mode-btn" id="toolsModeBtn" title="Tools (untuk generate file)">
+                <i class="fas fa-tools"></i> TOOLS
+            </button>
+            <button class="mode-btn" id="uploadFileBtn" title="Upload file">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="file" id="fileInput" multiple style="display:none;" accept="*/*">
         </div>
-        <button class="send-btn" id="sendBtn"><span>KIRIM</span> <i class="fas fa-paper-plane"></i></button>
+        <button class="send-btn" id="sendBtn">
+            <span>KIRIM</span> <i class="fas fa-paper-plane"></i>
+        </button>
     </div>
 </div>
 
@@ -154,12 +694,13 @@
         let maxTokens = parseInt(localStorage.getItem('max_tokens') || '8192');
         let systemPrompt = localStorage.getItem('system_prompt') || '';
 
-        let messages = [];
-        let chatHistory = [];
-        let currentFiles = [];
+        let messages = [];               // Array pesan { role, content, reasoning?, tool_calls?, timestamp, file? }
+        let chatHistory = [];            // Array { id, title, preview }
+        let currentFiles = [];           // File yang dipilih untuk diunggah (hanya info, tidak dikirim biner)
         let thinkingMode = false;
         let toolsMode = false;
         let isLoading = false;
+        let currentStreamReader = null;   // Untuk membatalkan stream jika perlu
 
         // DOM Elements
         const sidebar = document.getElementById('sidebar');
@@ -186,26 +727,44 @@
         const newChatHeaderBtn = document.getElementById('newChatHeaderBtn');
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-        // ---------- INIT ----------
+        // ---------- INITIALIZATION ----------
         function init() {
+            // Load config dari localStorage
             modelIdInput.value = modelId;
             temperatureInput.value = temperature;
             topPInput.value = topP;
             maxTokensInput.value = maxTokens;
             systemPromptInput.value = systemPrompt;
-            headerModelBadge.textContent = modelId.split('/').pop() || 'deepseek-v3.2';
+            updateHeaderBadge();
 
             loadChatHistory();
             loadMessagesFromStorage();
-            if(messages.length === 0) addWelcomeMessage();
-            else renderAllMessages();
+
+            if (messages.length === 0) {
+                addWelcomeMessage();
+            } else {
+                renderAllMessages();
+            }
+
+            // Auto-resize textarea
+            messageInput.addEventListener('input', autoResizeTextarea);
         }
 
         function addWelcomeMessage() {
-            messages.push({ role: 'assistant', content: 'Halo! Saya asisten AI NVIDIA. API key dikelola server, Anda tinggal chat.', timestamp: Date.now() });
+            messages.push({
+                role: 'assistant',
+                content: 'Halo! Saya asisten AI NVIDIA. Silakan ajukan pertanyaan atau unggah file.',
+                timestamp: Date.now()
+            });
             renderAllMessages();
         }
 
+        function updateHeaderBadge() {
+            const shortName = modelId.split('/').pop() || 'deepseek-v3.2';
+            headerModelBadge.textContent = shortName;
+        }
+
+        // ---------- RENDER CHAT ----------
         function renderAllMessages() {
             chatContainer.innerHTML = '';
             messages.forEach(msg => appendMessageToDOM(msg));
@@ -215,208 +774,490 @@
         function appendMessageToDOM(msg) {
             const div = document.createElement('div');
             div.className = `message ${msg.role}`;
+            
             let contentHtml = '';
-            if(msg.reasoning) contentHtml += `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>`;
+            if (msg.reasoning) {
+                contentHtml += `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>`;
+            }
             contentHtml += `<div class="message-content">${escapeHtml(msg.content || '')}</div>`;
-            if(msg.tool_calls && msg.tool_calls.length) {
+            
+            if (msg.tool_calls && msg.tool_calls.length > 0) {
                 msg.tool_calls.forEach(tc => {
-                    contentHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${JSON.stringify(tc.function?.arguments || {})}'>${tc.function?.name || 'tool'} · Download</span></div>`;
+                    const args = tc.function?.arguments;
+                    let fileData = '';
+                    try {
+                        fileData = JSON.stringify(args || {});
+                    } catch(e) { fileData = '{}'; }
+                    contentHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${escapeHtml(fileData)}'>${escapeHtml(tc.function?.name || 'tool')} · Download</span></div>`;
                 });
             }
-            if(msg.file) contentHtml += `<div class="file-attachment"><i class="fas fa-paperclip"></i> ${msg.file.name} (${formatBytes(msg.file.size)})</div>`;
-            div.innerHTML = contentHtml + `<div class="message-meta">${msg.role === 'user' ? 'Anda' : 'NVIDIA NIM'} · ${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+            
+            if (msg.file) {
+                contentHtml += `<div class="file-attachment"><i class="fas fa-paperclip"></i> ${escapeHtml(msg.file.name)} (${formatBytes(msg.file.size)})</div>`;
+            }
+            
+            const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
+            div.innerHTML = contentHtml + `<div class="message-meta">${msg.role === 'user' ? 'Anda' : 'NVIDIA NIM'} · ${timeStr}</div>`;
             chatContainer.appendChild(div);
+            
+            // Attach download event
             div.querySelectorAll('.download-link').forEach(el => {
                 el.addEventListener('click', (e) => {
-                    const fileData = e.target.getAttribute('data-file');
-                    try {
-                        const parsed = JSON.parse(fileData);
-                        if(parsed.content) downloadTextFile(parsed.filename || 'generated.txt', parsed.content);
-                    } catch(e) { downloadTextFile('generated.txt', fileData); }
+                    const fileData = e.currentTarget.getAttribute('data-file');
+                    handleDownload(fileData);
                 });
             });
         }
 
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        function formatBytes(bytes) { return bytes < 1024 ? bytes+' B' : bytes < 1048576 ? (bytes/1024).toFixed(1)+' KB' : (bytes/1048576).toFixed(1)+' MB'; }
-        function downloadTextFile(filename, content) {
-            const blob = new Blob([content], {type: 'text/plain'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(a.href);
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
-        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
 
-        // ---------- API CALL TO BACKEND ----------
-        async function sendMessage() {
-            const userText = messageInput.value.trim();
-            if(!userText && currentFiles.length === 0) return;
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
 
-            let userContent = userText;
-            if(currentFiles.length) userContent += `\n[File: ${currentFiles.map(f=>f.name).join(', ')}]`;
-
-            const userMsg = { role: 'user', content: userContent, timestamp: Date.now(), file: currentFiles[0] || null };
-            messages.push(userMsg);
-            appendMessageToDOM(userMsg);
-            messageInput.value = '';
-            clearFiles();
-
-            const assistantPlaceholder = { role: 'assistant', content: '', reasoning: '', timestamp: Date.now(), tool_calls: [] };
-            messages.push(assistantPlaceholder);
-            const assistantMsgDiv = document.createElement('div');
-            assistantMsgDiv.className = 'message assistant';
-            assistantMsgDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-            chatContainer.appendChild(assistantMsgDiv);
-            scrollToBottom();
-            isLoading = true;
-            sendBtn.disabled = true;
-
+        function handleDownload(fileDataStr) {
             try {
-                const apiMessages = systemPrompt ? [{ role: 'system', content: systemPrompt }] : [];
-                for(let i=0; i<messages.length-1; i++) apiMessages.push({ role: messages[i].role, content: messages[i].content });
-
-                const requestBody = {
-                    model: modelId,
-                    messages: apiMessages,
-                    temperature,
-                    top_p: topP,
-                    max_tokens: maxTokens,
-                    stream: true,
-                    chat_template_kwargs: { thinking: thinkingMode }
-                };
-
-                if(toolsMode) {
-                    requestBody.tools = [
-                        { type: "function", function: { name: "generate_text_file", description: "Generate a text file", parameters: { type: "object", properties: { filename: {type:"string"}, content: {type:"string"} }, required: ["filename","content"] } } },
-                        { type: "function", function: { name: "describe_harry_potter_character", description: "Harry Potter character info", parameters: { type: "object", properties: { name: { type:"string", enum: ["Harry James Potter","Hermione Jean Granger","Ron Weasley","Fred Weasley","George Weasley","Bill Weasley","Percy Weasley","Charlie Weasley","Ginny Weasley","Molly Weasley","Arthur Weasley","Neville Longbottom","Luna Lovegood","Draco Malfoy","Albus Percival Wulfric Brian Dumbledore","Minerva McGonagall","Remus Lupin","Rubeus Hagrid","Sirius Black","Severus Snape","Bellatrix Lestrange","Lord Voldemort","Cedric Diggory","Nymphadora Tonks","James Potter"] } }, required: ["name"] } } }
-                    ];
-                    requestBody.tool_choice = "auto";
+                const parsed = JSON.parse(fileDataStr);
+                if (parsed.content) {
+                    downloadTextFile(parsed.filename || 'generated.txt', parsed.content);
+                } else {
+                    downloadTextFile('tool_output.txt', fileDataStr);
                 }
-
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if(!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error || `HTTP ${response.status}`);
-                }
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let accumulatedContent = '', accumulatedReasoning = '', toolCalls = [];
-
-                assistantMsgDiv.innerHTML = '';
-                let contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                assistantMsgDiv.appendChild(contentDiv);
-
-                while(true) {
-                    const { done, value } = await reader.read();
-                    if(done) break;
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n').filter(l => l.trim());
-                    for(const line of lines) {
-                        if(line.startsWith('data: ')) {
-                            const data = line.slice(6);
-                            if(data === '[DONE]') continue;
-                            try {
-                                const json = JSON.parse(data);
-                                const delta = json.choices[0]?.delta;
-                                if(delta?.reasoning_content) accumulatedReasoning += delta.reasoning_content;
-                                if(delta?.content) accumulatedContent += delta.content;
-                                if(delta?.tool_calls) toolCalls = delta.tool_calls;
-                                let display = (accumulatedReasoning ? `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>` : '') + escapeHtml(accumulatedContent);
-                                if(toolCalls.length) toolCalls.forEach(tc => display += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${JSON.stringify(tc.function?.arguments || {})}'>${tc.function?.name}</span></div>`);
-                                contentDiv.innerHTML = display;
-                                scrollToBottom();
-                            } catch(e) {}
-                        }
-                    }
-                }
-                messages[messages.length-1] = { role: 'assistant', content: accumulatedContent, reasoning: accumulatedReasoning, tool_calls: toolCalls, timestamp: Date.now() };
-                assistantMsgDiv.innerHTML += `<div class="message-meta">NVIDIA NIM · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
-                saveCurrentSession();
-                addToChatHistory(userText, accumulatedContent);
-            } catch(error) {
-                assistantMsgDiv.innerHTML = `<div class="message-content" style="color:#FF5500;">Error: ${escapeHtml(error.message)}</div>`;
-                messages.pop();
-            } finally {
-                isLoading = false;
-                sendBtn.disabled = false;
+            } catch (e) {
+                downloadTextFile('generated.txt', fileDataStr);
             }
         }
 
-        // ---------- FILE & HISTORY ----------
-        function handleFiles(files) { currentFiles = Array.from(files); renderFilePreviews(); }
+        function downloadTextFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+        }
+
+        // ---------- FILE HANDLING ----------
+        function handleFiles(files) {
+            currentFiles = Array.from(files);
+            renderFilePreviews();
+        }
+
         function renderFilePreviews() {
             filePreviewContainer.innerHTML = '';
-            currentFiles.forEach((f,i) => {
-                const div = document.createElement('div'); div.className = 'file-preview';
-                div.innerHTML = `<i class="fas fa-file"></i> ${f.name} <button class="remove-file" data-index="${i}">✕</button>`;
-                filePreviewContainer.appendChild(div);
+            currentFiles.forEach((file, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'file-preview';
+                preview.innerHTML = `<i class="fas fa-file"></i> ${escapeHtml(file.name)} <button class="remove-file" data-index="${index}">✕</button>`;
+                filePreviewContainer.appendChild(preview);
             });
-            document.querySelectorAll('.remove-file').forEach(b => b.addEventListener('click', (e) => { currentFiles.splice(e.target.dataset.index,1); renderFilePreviews(); }));
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    currentFiles.splice(idx, 1);
+                    renderFilePreviews();
+                    if (currentFiles.length === 0) fileInput.value = '';
+                });
+            });
         }
-        function clearFiles() { currentFiles = []; filePreviewContainer.innerHTML = ''; fileInput.value = ''; }
-        function loadChatHistory() { chatHistory = JSON.parse(localStorage.getItem('chat_history') || '[]'); renderHistoryList(); }
+
+        function clearFiles() {
+            currentFiles = [];
+            filePreviewContainer.innerHTML = '';
+            fileInput.value = '';
+        }
+
+        // ---------- HISTORY MANAGEMENT ----------
+        function loadChatHistory() {
+            const stored = localStorage.getItem('chat_history');
+            if (stored) {
+                try { chatHistory = JSON.parse(stored); } catch(e){ chatHistory = []; }
+            }
+            renderHistoryList();
+        }
+
         function renderHistoryList() {
-            historyList.innerHTML = chatHistory.length ? '' : '<div style="color:#777;padding:8px;">Belum ada riwayat</div>';
-            chatHistory.slice().reverse().forEach(item => {
-                const div = document.createElement('div'); div.className = 'history-item';
-                div.innerHTML = `<div class="history-title">${escapeHtml(item.title)}</div><div class="history-preview">${escapeHtml(item.preview)}</div>`;
-                div.addEventListener('click', ()=> alert('Fitur load chat dapat dikembangkan.'));
+            historyList.innerHTML = '';
+            if (chatHistory.length === 0) {
+                historyList.innerHTML = '<div style="color:#777; padding:8px; text-align:center;">Belum ada riwayat</div>';
+                return;
+            }
+            // Tampilkan terbaru di atas
+            const sorted = [...chatHistory].reverse();
+            sorted.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="history-title">${escapeHtml(item.title || 'Chat')}</div>
+                    <div class="history-preview">${escapeHtml(item.preview || '')}</div>
+                `;
+                div.addEventListener('click', () => loadChatFromHistory(item.id));
                 historyList.appendChild(div);
             });
         }
+
         function addToChatHistory(userMsg, assistantMsg) {
             const id = Date.now();
-            chatHistory.push({ id, title: userMsg.substring(0,30), preview: assistantMsg.substring(0,40) });
-            if(chatHistory.length > 20) chatHistory.shift();
+            const title = userMsg.substring(0, 30) + (userMsg.length > 30 ? '...' : '');
+            const preview = assistantMsg.substring(0, 40);
+            chatHistory.push({ id, title, preview, timestamp: id });
+            // Batasi 30 item
+            if (chatHistory.length > 30) chatHistory.shift();
             localStorage.setItem('chat_history', JSON.stringify(chatHistory));
             renderHistoryList();
         }
-        function clearAllHistory() { chatHistory = []; localStorage.removeItem('chat_history'); renderHistoryList(); }
-        function saveCurrentSession() { localStorage.setItem('current_messages', JSON.stringify(messages)); }
+
+        function loadChatFromHistory(id) {
+            // Fitur sederhana: alert, bisa dikembangkan lebih lanjut
+            alert('Fitur load chat dari history akan datang di update berikutnya.');
+        }
+
+        function clearAllHistory() {
+            chatHistory = [];
+            localStorage.removeItem('chat_history');
+            renderHistoryList();
+        }
+
+        function saveCurrentSession() {
+            localStorage.setItem('current_messages', JSON.stringify(messages));
+        }
+
         function loadMessagesFromStorage() {
             const stored = localStorage.getItem('current_messages');
-            if(stored) try { messages = JSON.parse(stored); } catch(e){}
+            if (stored) {
+                try { messages = JSON.parse(stored); } catch(e){ messages = []; }
+            }
         }
-        function newChat() { messages = []; addWelcomeMessage(); saveCurrentSession(); clearFiles(); }
 
-        // ---------- SYNC CONFIG ----------
+        function newChat() {
+            // Batalkan stream jika sedang berjalan
+            if (currentStreamReader) {
+                currentStreamReader.cancel();
+                currentStreamReader = null;
+            }
+            messages = [];
+            addWelcomeMessage();
+            saveCurrentSession();
+            clearFiles();
+            isLoading = false;
+            sendBtn.disabled = false;
+        }
+
+        // ---------- SYNC CONFIG TO STORAGE ----------
         function syncConfigToStorage() {
             localStorage.setItem('model_id', modelId);
             localStorage.setItem('temp', temperature);
             localStorage.setItem('top_p', topP);
             localStorage.setItem('max_tokens', maxTokens);
             localStorage.setItem('system_prompt', systemPrompt);
-            headerModelBadge.textContent = modelId.split('/').pop();
+            updateHeaderBadge();
+        }
+
+        // ---------- API CALL (to Vercel backend) ----------
+        async function sendMessage() {
+            const userText = messageInput.value.trim();
+            if (!userText && currentFiles.length === 0) return;
+            if (isLoading) return;
+
+            // Build user message content
+            let userContent = userText;
+            if (currentFiles.length > 0) {
+                const fileNames = currentFiles.map(f => f.name).join(', ');
+                userContent += `\n[File terlampir: ${fileNames}]`;
+            }
+
+            const userMsg = {
+                role: 'user',
+                content: userContent,
+                timestamp: Date.now(),
+                file: currentFiles.length > 0 ? currentFiles[0] : null  // simpan file pertama sbg referensi
+            };
+            messages.push(userMsg);
+            appendMessageToDOM(userMsg);
+            
+            // Reset input
+            messageInput.value = '';
+            autoResizeTextarea();
+            clearFiles();
+            
+            // Placeholder untuk assistant
+            const assistantPlaceholder = {
+                role: 'assistant',
+                content: '',
+                reasoning: '',
+                timestamp: Date.now(),
+                tool_calls: []
+            };
+            messages.push(assistantPlaceholder);
+            const assistantMsgDiv = document.createElement('div');
+            assistantMsgDiv.className = 'message assistant';
+            assistantMsgDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+            chatContainer.appendChild(assistantMsgDiv);
+            scrollToBottom();
+            
+            isLoading = true;
+            sendBtn.disabled = true;
+            
+            try {
+                // Siapkan messages untuk API
+                const apiMessages = [];
+                if (systemPrompt) {
+                    apiMessages.push({ role: 'system', content: systemPrompt });
+                }
+                // Ambil semua pesan kecuali placeholder terakhir
+                for (let i = 0; i < messages.length - 1; i++) {
+                    apiMessages.push({ role: messages[i].role, content: messages[i].content });
+                }
+                
+                const requestBody = {
+                    model: modelId,
+                    messages: apiMessages,
+                    temperature: temperature,
+                    top_p: topP,
+                    max_tokens: maxTokens,
+                    stream: true,
+                    chat_template_kwargs: { thinking: thinkingMode }
+                };
+                
+                if (toolsMode) {
+                    requestBody.tools = [
+                        {
+                            type: "function",
+                            function: {
+                                name: "generate_text_file",
+                                description: "Generate a text file with given content and filename",
+                                parameters: {
+                                    type: "object",
+                                    properties: {
+                                        filename: { type: "string", description: "Name of the file" },
+                                        content: { type: "string", description: "Content to write" }
+                                    },
+                                    required: ["filename", "content"]
+                                }
+                            }
+                        },
+                        {
+                            type: "function",
+                            function: {
+                                name: "describe_harry_potter_character",
+                                description: "Returns information and images of Harry Potter characters.",
+                                parameters: {
+                                    type: "object",
+                                    properties: {
+                                        name: {
+                                            type: "string",
+                                            enum: ["Harry James Potter","Hermione Jean Granger","Ron Weasley","Fred Weasley","George Weasley","Bill Weasley","Percy Weasley","Charlie Weasley","Ginny Weasley","Molly Weasley","Arthur Weasley","Neville Longbottom","Luna Lovegood","Draco Malfoy","Albus Percival Wulfric Brian Dumbledore","Minerva McGonagall","Remus Lupin","Rubeus Hagrid","Sirius Black","Severus Snape","Bellatrix Lestrange","Lord Voldemort","Cedric Diggory","Nymphadora Tonks","James Potter"]
+                                        }
+                                    },
+                                    required: ["name"]
+                                }
+                            }
+                        }
+                    ];
+                    requestBody.tool_choice = "auto";
+                }
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    let errorMsg = `HTTP ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        errorMsg = errData.error || errorMsg;
+                    } catch (e) {
+                        const text = await response.text();
+                        errorMsg = text.substring(0, 100);
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                // Streaming response
+                const reader = response.body.getReader();
+                currentStreamReader = reader;
+                const decoder = new TextDecoder();
+                let accumulatedContent = '';
+                let accumulatedReasoning = '';
+                let toolCalls = [];
+                
+                // Ganti loading indicator dengan konten
+                assistantMsgDiv.innerHTML = '';
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                assistantMsgDiv.appendChild(contentDiv);
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n').filter(line => line.trim() !== '');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6);
+                            if (data === '[DONE]') continue;
+                            try {
+                                const json = JSON.parse(data);
+                                const delta = json.choices[0]?.delta;
+                                if (delta?.reasoning_content) accumulatedReasoning += delta.reasoning_content;
+                                if (delta?.content) accumulatedContent += delta.content;
+                                if (delta?.tool_calls) {
+                                    // Merge tool calls (sederhana)
+                                    toolCalls = delta.tool_calls;
+                                }
+                                
+                                // Update tampilan
+                                let displayHtml = '';
+                                if (accumulatedReasoning) {
+                                    displayHtml += `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>`;
+                                }
+                                displayHtml += escapeHtml(accumulatedContent);
+                                if (toolCalls.length > 0) {
+                                    toolCalls.forEach(tc => {
+                                        const args = tc.function?.arguments;
+                                        let fileData = '';
+                                        try {
+                                            fileData = JSON.stringify(args || {});
+                                        } catch(e) { fileData = '{}'; }
+                                        displayHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${escapeHtml(fileData)}'>${escapeHtml(tc.function?.name || 'tool')} · Download</span></div>`;
+                                    });
+                                }
+                                contentDiv.innerHTML = displayHtml;
+                                scrollToBottom();
+                            } catch (e) {
+                                // Abaikan chunk yang bukan JSON
+                            }
+                        }
+                    }
+                }
+                
+                // Selesai streaming
+                messages[messages.length - 1] = {
+                    role: 'assistant',
+                    content: accumulatedContent,
+                    reasoning: accumulatedReasoning,
+                    tool_calls: toolCalls,
+                    timestamp: Date.now()
+                };
+                
+                // Tambahkan meta waktu
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'message-meta';
+                metaDiv.textContent = `NVIDIA NIM · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+                assistantMsgDiv.appendChild(metaDiv);
+                
+                // Re-attach download events
+                assistantMsgDiv.querySelectorAll('.download-link').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        const fileData = e.currentTarget.getAttribute('data-file');
+                        handleDownload(fileData);
+                    });
+                });
+                
+                saveCurrentSession();
+                addToChatHistory(userText, accumulatedContent);
+                
+            } catch (error) {
+                assistantMsgDiv.innerHTML = `<div class="message-content" style="color:#FF5500;">Error: ${escapeHtml(error.message)}</div>`;
+                messages.pop(); // hapus placeholder
+            } finally {
+                isLoading = false;
+                sendBtn.disabled = false;
+                currentStreamReader = null;
+            }
         }
 
         // ---------- EVENT LISTENERS ----------
-        hamburgerBtn.addEventListener('click', ()=> { sidebar.classList.add('open'); overlay.classList.add('open'); });
-        closeSidebarBtn.addEventListener('click', ()=> { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
-        overlay.addEventListener('click', ()=> { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+        hamburgerBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+        });
+        
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
         sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keydown', (e) => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-        thinkingModeBtn.addEventListener('click', ()=> { thinkingMode = !thinkingMode; thinkingModeBtn.classList.toggle('active', thinkingMode); });
-        toolsModeBtn.addEventListener('click', ()=> { toolsMode = !toolsMode; toolsModeBtn.classList.toggle('active', toolsMode); });
-        uploadFileBtn.addEventListener('click', ()=> fileInput.click());
-        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-        modelIdInput.addEventListener('input', (e)=> { modelId = e.target.value; syncConfigToStorage(); });
-        temperatureInput.addEventListener('input', (e)=> { temperature = parseFloat(e.target.value); syncConfigToStorage(); });
-        topPInput.addEventListener('input', (e)=> { topP = parseFloat(e.target.value); syncConfigToStorage(); });
-        maxTokensInput.addEventListener('input', (e)=> { maxTokens = parseInt(e.target.value); syncConfigToStorage(); });
-        systemPromptInput.addEventListener('input', (e)=> { systemPrompt = e.target.value; syncConfigToStorage(); });
-        newChatSidebarBtn.addEventListener('click', ()=> { newChat(); sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+        
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        thinkingModeBtn.addEventListener('click', () => {
+            thinkingMode = !thinkingMode;
+            thinkingModeBtn.classList.toggle('active', thinkingMode);
+        });
+        
+        toolsModeBtn.addEventListener('click', () => {
+            toolsMode = !toolsMode;
+            toolsModeBtn.classList.toggle('active', toolsMode);
+        });
+        
+        uploadFileBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        // Config inputs
+        modelIdInput.addEventListener('input', (e) => {
+            modelId = e.target.value;
+            syncConfigToStorage();
+        });
+        temperatureInput.addEventListener('input', (e) => {
+            temperature = parseFloat(e.target.value);
+            syncConfigToStorage();
+        });
+        topPInput.addEventListener('input', (e) => {
+            topP = parseFloat(e.target.value);
+            syncConfigToStorage();
+        });
+        maxTokensInput.addEventListener('input', (e) => {
+            maxTokens = parseInt(e.target.value);
+            syncConfigToStorage();
+        });
+        systemPromptInput.addEventListener('input', (e) => {
+            systemPrompt = e.target.value;
+            syncConfigToStorage();
+        });
+        
+        newChatSidebarBtn.addEventListener('click', () => {
+            newChat();
+            closeSidebar();
+        });
         newChatHeaderBtn.addEventListener('click', newChat);
         clearHistoryBtn.addEventListener('click', clearAllHistory);
-
+        
+        // Mulai
         init();
     })();
 </script>
