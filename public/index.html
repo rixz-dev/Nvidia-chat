@@ -115,7 +115,7 @@
             background: rgba(255, 80, 0, 0.1);
         }
 
-        /* Sidebar (Hamburger) */
+        /* Sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -250,10 +250,6 @@
             transition: 0.2s;
         }
 
-        .new-chat-btn:active {
-            background: #FF7700;
-        }
-
         .history-item {
             background: #1A1A1A;
             border-radius: 10px;
@@ -261,11 +257,6 @@
             margin-bottom: 8px;
             border-left: 3px solid #FF5500;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .history-item:active {
-            background: #222;
         }
 
         .history-title {
@@ -273,9 +264,6 @@
             font-size: 14px;
             margin-bottom: 4px;
             color: #FF8A00;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .history-preview {
@@ -296,12 +284,6 @@
             font-weight: 700;
             margin-top: 12px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .clear-history-btn:active {
-            background: #FF5500;
-            color: black;
         }
 
         /* Chat Area */
@@ -313,28 +295,17 @@
             flex-direction: column;
             gap: 16px;
             background: #0A0A0A;
-            scroll-behavior: smooth;
         }
 
         .message {
             display: flex;
             flex-direction: column;
             max-width: 90%;
-            animation: fadeIn 0.2s ease;
+            animation: fadeIn 0.2s;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.user {
-            align-self: flex-end;
-        }
-
-        .message.assistant {
-            align-self: flex-start;
-        }
+        .message.user { align-self: flex-end; }
+        .message.assistant { align-self: flex-start; }
 
         .message-content {
             padding: 14px 16px;
@@ -359,27 +330,104 @@
             color: #EEE;
         }
 
-        .message-meta {
-            font-size: 11px;
-            color: #777;
-            margin-top: 5px;
-            padding: 0 8px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
+        /* Thinking block collapsible */
+        .think-block {
+            margin: 8px 0;
+            border: 1px solid #FF5500;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
         }
 
-        .thinking-badge {
-            display: inline-block;
+        .think-header {
+            padding: 10px 14px;
+            background: #1A1A1A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #FF8A00;
+            border-bottom: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .think-header i {
+            transition: transform 0.2s;
+        }
+
+        .think-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .think-content {
+            padding: 12px 14px;
+            color: #BBB;
+            font-size: 14px;
+            border-top: 1px solid #333;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .think-content.collapsed {
+            display: none;
+        }
+
+        /* Code blocks */
+        .code-block-wrapper {
+            position: relative;
+            margin: 12px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0D0D0D;
+            border: 1px solid #333;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #1A1A1A;
+            border-bottom: 1px solid #333;
+            color: #AAA;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .copy-code-btn {
+            background: none;
+            border: 1px solid #FF5500;
+            color: #FF5500;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+
+        .copy-code-btn.copied {
             background: #FF5500;
             color: black;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 10px;
-            border-radius: 30px;
-            margin-right: 8px;
-            text-transform: uppercase;
         }
 
+        .code-block {
+            padding: 14px;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+            color: #E0E0E0;
+        }
+
+        /* File attachment & download */
         .file-attachment {
             margin-top: 8px;
             background: #1A1A1A;
@@ -391,10 +439,28 @@
             font-size: 13px;
             border: 1px dashed #FF5500;
             color: #FF8A00;
-            font-weight: 600;
         }
 
-        /* Input Area */
+        .generated-file-link {
+            background: #1A1A1A;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid #FF5500;
+            display: inline-block;
+        }
+
+        .download-link {
+            color: #FF8A00;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Input Area - redesigned */
         .input-area {
             background: #0F0F0F;
             border-top: 1px solid #222;
@@ -422,17 +488,7 @@
             border: 1px solid #333;
         }
 
-        .remove-file {
-            background: none;
-            border: none;
-            color: #FF5500;
-            font-weight: 800;
-            cursor: pointer;
-            margin-left: 6px;
-            font-size: 14px;
-        }
-
-        .input-wrapper {
+        .input-row {
             display: flex;
             align-items: flex-end;
             gap: 8px;
@@ -451,7 +507,6 @@
             resize: none;
             font-family: inherit;
             line-height: 1.4;
-            transition: border 0.2s;
         }
 
         .message-input:focus {
@@ -459,14 +514,14 @@
             border-color: #FF5500;
         }
 
-        .action-buttons {
+        .action-row {
             display: flex;
-            gap: 8px;
-            margin-top: 10px;
             justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
 
-        .left-actions {
+        .mode-buttons {
             display: flex;
             gap: 8px;
         }
@@ -476,7 +531,7 @@
             border: 1px solid #2A2A2A;
             color: #CCC;
             font-weight: 700;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 30px;
             font-size: 13px;
             display: flex;
@@ -484,6 +539,11 @@
             gap: 6px;
             cursor: pointer;
             transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .mode-btn i {
+            font-size: 14px;
         }
 
         .mode-btn.active {
@@ -504,7 +564,6 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: 0.2s;
             box-shadow: 0 4px 12px rgba(255,80,0,0.3);
         }
 
@@ -513,7 +572,7 @@
             pointer-events: none;
         }
 
-        /* Loading indicator */
+        /* Loading */
         .typing-indicator {
             display: flex;
             gap: 6px;
@@ -521,7 +580,6 @@
             background: #1A1A1A;
             border-radius: 22px;
             width: fit-content;
-            align-self: flex-start;
         }
 
         .typing-dot {
@@ -532,49 +590,14 @@
             animation: bounce 1.4s infinite;
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes bounce {
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
 
-        /* Generated file link */
-        .generated-file-link {
-            background: #1A1A1A;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 12px;
-            border: 1px solid #FF5500;
-        }
-
-        .download-link {
-            color: #FF8A00;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        /* Info note di sidebar */
-        .sidebar-note {
-            color: #AAA;
-            font-size: 12px;
-            margin-top: 12px;
-            padding: 8px;
-            background: #1A1A1A;
-            border-radius: 8px;
-        }
-
-        /* Mobile first sudah default, desktop adjustment */
         @media (min-width: 768px) {
             .app-header { padding: 12px 24px; }
             .chat-container { padding: 20px 24px; }
@@ -584,7 +607,7 @@
 </head>
 <body>
 
-<!-- SIDEBAR (Hamburger Menu) -->
+<!-- SIDEBAR (sama seperti sebelumnya) -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -592,13 +615,10 @@
         <button class="icon-btn" id="closeSidebarBtn" style="color:#FF5500;"><i class="fas fa-times"></i></button>
     </div>
     <div class="sidebar-content">
-        <!-- Model ID -->
         <div class="config-section">
             <label class="config-label">MODEL ID</label>
-            <input type="text" class="config-input" id="modelIdInput" value="deepseek-ai/deepseek-v3.2" placeholder="deepseek-ai/deepseek-v3.2">
+            <input type="text" class="config-input" id="modelIdInput" value="deepseek-ai/deepseek-v3.2">
         </div>
-
-        <!-- Parameter -->
         <div class="config-section">
             <label class="config-label">PARAMETER</label>
             <div class="param-row">
@@ -614,25 +634,18 @@
                 <input type="number" id="maxTokensInput" min="1" max="8192" value="8192">
             </div>
         </div>
-
-        <!-- Personalisasi (System Prompt) -->
         <div class="config-section">
             <label class="config-label">PERSONALISASI</label>
             <input type="text" class="config-input" id="systemPromptInput" placeholder="System prompt (opsional)" value="">
         </div>
-
-        <!-- New Chat & History -->
         <button class="new-chat-btn" id="newChatSidebarBtn"><i class="fas fa-plus-circle"></i> NEW CHAT</button>
-
         <div class="config-section">
             <label class="config-label">RIWAYAT CHAT</label>
             <div id="historyList"></div>
             <button class="clear-history-btn" id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> HAPUS SEMUA</button>
         </div>
-
-        <div class="sidebar-note">
-            <i class="fas fa-shield-alt"></i> API Key dikelola di server.<br>
-            <i class="fas fa-code-branch"></i> Model: deepseek-ai/deepseek-v3.2
+        <div class="sidebar-note" style="color:#AAA;font-size:12px;margin-top:12px;">
+            <i class="fas fa-shield-alt"></i> API Key via server
         </div>
     </div>
 </aside>
@@ -640,9 +653,7 @@
 <!-- HEADER -->
 <header class="app-header">
     <div class="header-left">
-        <button class="hamburger-btn" id="hamburgerBtn">
-            <i class="fas fa-bars"></i>
-        </button>
+        <button class="hamburger-btn" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
         <div class="header-title">
             <h1>NVIDIA NIM</h1>
             <span class="model-badge" id="headerModelBadge">deepseek-v3.2</span>
@@ -654,32 +665,22 @@
 </header>
 
 <!-- CHAT DISPLAY -->
-<div class="chat-container" id="chatContainer">
-    <!-- Pesan akan dirender di sini -->
-</div>
+<div class="chat-container" id="chatContainer"></div>
 
-<!-- INPUT AREA -->
+<!-- INPUT AREA (redesigned) -->
 <div class="input-area">
     <div class="file-preview-container" id="filePreviewContainer"></div>
-    <div class="input-wrapper">
+    <div class="input-row">
         <textarea class="message-input" id="messageInput" placeholder="Ketik pesan..." rows="1"></textarea>
     </div>
-    <div class="action-buttons">
-        <div class="left-actions">
-            <button class="mode-btn" id="thinkingModeBtn" title="Aktifkan thinking mode">
-                <i class="fas fa-brain"></i> THINKING
-            </button>
-            <button class="mode-btn" id="toolsModeBtn" title="Tools (untuk generate file)">
-                <i class="fas fa-tools"></i> TOOLS
-            </button>
-            <button class="mode-btn" id="uploadFileBtn" title="Upload file">
-                <i class="fas fa-paperclip"></i>
-            </button>
+    <div class="action-row">
+        <div class="mode-buttons">
+            <button class="mode-btn" id="thinkingModeBtn"><i class="fas fa-brain"></i><span>THINKING</span></button>
+            <button class="mode-btn" id="toolsModeBtn"><i class="fas fa-tools"></i><span>TOOLS</span></button>
+            <button class="mode-btn" id="uploadFileBtn"><i class="fas fa-paperclip"></i></button>
             <input type="file" id="fileInput" multiple style="display:none;" accept="*/*">
         </div>
-        <button class="send-btn" id="sendBtn">
-            <span>KIRIM</span> <i class="fas fa-paper-plane"></i>
-        </button>
+        <button class="send-btn" id="sendBtn"><span>KIRIM</span> <i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
@@ -694,19 +695,16 @@
         let maxTokens = parseInt(localStorage.getItem('max_tokens') || '8192');
         let systemPrompt = localStorage.getItem('system_prompt') || '';
 
-        let messages = [];               // Array pesan { role, content, reasoning?, tool_calls?, timestamp, file? }
-        let chatHistory = [];            // Array { id, title, preview }
-        let currentFiles = [];           // File yang dipilih untuk diunggah (hanya info, tidak dikirim biner)
+        let messages = [];
+        let chatHistory = [];
+        let currentFiles = [];
         let thinkingMode = false;
         let toolsMode = false;
         let isLoading = false;
-        let currentStreamReader = null;   // Untuk membatalkan stream jika perlu
 
         // DOM Elements
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -723,13 +721,8 @@
         const historyList = document.getElementById('historyList');
         const headerModelBadge = document.getElementById('headerModelBadge');
 
-        const newChatSidebarBtn = document.getElementById('newChatSidebarBtn');
-        const newChatHeaderBtn = document.getElementById('newChatHeaderBtn');
-        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-
-        // ---------- INITIALIZATION ----------
+        // ---------- INIT ----------
         function init() {
-            // Load config dari localStorage
             modelIdInput.value = modelId;
             temperatureInput.value = temperature;
             topPInput.value = topP;
@@ -739,32 +732,22 @@
 
             loadChatHistory();
             loadMessagesFromStorage();
+            if (messages.length === 0) addWelcomeMessage();
+            else renderAllMessages();
 
-            if (messages.length === 0) {
-                addWelcomeMessage();
-            } else {
-                renderAllMessages();
-            }
-
-            // Auto-resize textarea
             messageInput.addEventListener('input', autoResizeTextarea);
         }
 
         function addWelcomeMessage() {
-            messages.push({
-                role: 'assistant',
-                content: 'Halo! Saya asisten AI NVIDIA. Silakan ajukan pertanyaan atau unggah file.',
-                timestamp: Date.now()
-            });
+            messages.push({ role: 'assistant', content: 'Halo! Saya asisten AI. Gunakan mode Tools untuk menghasilkan file.', timestamp: Date.now() });
             renderAllMessages();
         }
 
         function updateHeaderBadge() {
-            const shortName = modelId.split('/').pop() || 'deepseek-v3.2';
-            headerModelBadge.textContent = shortName;
+            headerModelBadge.textContent = modelId.split('/').pop() || 'deepseek-v3.2';
         }
 
-        // ---------- RENDER CHAT ----------
+        // ---------- RENDER (dengan parsing think & code) ----------
         function renderAllMessages() {
             chatContainer.innerHTML = '';
             messages.forEach(msg => appendMessageToDOM(msg));
@@ -774,39 +757,127 @@
         function appendMessageToDOM(msg) {
             const div = document.createElement('div');
             div.className = `message ${msg.role}`;
-            
+
             let contentHtml = '';
-            if (msg.reasoning) {
-                contentHtml += `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>`;
+            if (msg.role === 'assistant') {
+                // Parsing konten: ekstrak reasoning dan format code blocks
+                const { cleanedContent, reasoning } = extractThinking(msg.content || '');
+                const formattedContent = formatContentWithCodeBlocks(cleanedContent);
+                
+                if (reasoning) {
+                    contentHtml += createCollapsibleThinkBlock(reasoning);
+                }
+                contentHtml += `<div class="message-content">${formattedContent}</div>`;
+            } else {
+                contentHtml += `<div class="message-content">${escapeHtml(msg.content || '')}</div>`;
             }
-            contentHtml += `<div class="message-content">${escapeHtml(msg.content || '')}</div>`;
-            
-            if (msg.tool_calls && msg.tool_calls.length > 0) {
+
+            // Tools calls (file generation)
+            if (msg.tool_calls && msg.tool_calls.length) {
                 msg.tool_calls.forEach(tc => {
                     const args = tc.function?.arguments;
-                    let fileData = '';
-                    try {
-                        fileData = JSON.stringify(args || {});
-                    } catch(e) { fileData = '{}'; }
-                    contentHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${escapeHtml(fileData)}'>${escapeHtml(tc.function?.name || 'tool')} · Download</span></div>`;
+                    let fileData = {};
+                    try { fileData = JSON.parse(args || '{}'); } catch(e){}
+                    if (fileData.filename && fileData.content) {
+                        contentHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-filename="${escapeHtml(fileData.filename)}" data-content="${escapeHtml(fileData.content)}">📄 ${escapeHtml(fileData.filename)} · Download</span></div>`;
+                    }
                 });
             }
-            
+
             if (msg.file) {
-                contentHtml += `<div class="file-attachment"><i class="fas fa-paperclip"></i> ${escapeHtml(msg.file.name)} (${formatBytes(msg.file.size)})</div>`;
+                contentHtml += `<div class="file-attachment"><i class="fas fa-paperclip"></i> ${escapeHtml(msg.file.name)}</div>`;
             }
-            
+
             const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
             div.innerHTML = contentHtml + `<div class="message-meta">${msg.role === 'user' ? 'Anda' : 'NVIDIA NIM'} · ${timeStr}</div>`;
             chatContainer.appendChild(div);
-            
-            // Attach download event
-            div.querySelectorAll('.download-link').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    const fileData = e.currentTarget.getAttribute('data-file');
-                    handleDownload(fileData);
+
+            // Attach event: collapsible think
+            div.querySelectorAll('.think-header').forEach(h => {
+                h.addEventListener('click', () => {
+                    const content = h.nextElementSibling;
+                    h.classList.toggle('collapsed');
+                    content.classList.toggle('collapsed');
                 });
             });
+
+            // Attach copy code
+            div.querySelectorAll('.copy-code-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const wrapper = e.target.closest('.code-block-wrapper');
+                    const code = wrapper.querySelector('.code-block').textContent;
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        btn.classList.add('copied');
+                        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            btn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                        }, 2000);
+                    } catch(err) {
+                        alert('Gagal menyalin');
+                    }
+                });
+            });
+
+            // Attach download
+            div.querySelectorAll('.download-link').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    const filename = el.dataset.filename || 'generated.txt';
+                    const content = el.dataset.content || '';
+                    downloadTextFile(filename, content);
+                });
+            });
+        }
+
+        function extractThinking(text) {
+            const thinkRegex = /<think>([\s\S]*?)<\/think>/i;
+            const match = text.match(thinkRegex);
+            if (match) {
+                const reasoning = match[1].trim();
+                const cleaned = text.replace(thinkRegex, '').trim();
+                return { cleanedContent: cleaned, reasoning };
+            }
+            return { cleanedContent: text, reasoning: '' };
+        }
+
+        function createCollapsibleThinkBlock(reasoning) {
+            return `
+                <div class="think-block">
+                    <div class="think-header">
+                        <i class="fas fa-chevron-down"></i>
+                        <i class="fas fa-brain"></i> THINKING
+                    </div>
+                    <div class="think-content">${escapeHtml(reasoning)}</div>
+                </div>
+            `;
+        }
+
+        function formatContentWithCodeBlocks(text) {
+            // Deteksi blok kode dengan ```
+            const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+            let lastIndex = 0;
+            let parts = [];
+            let match;
+            while ((match = codeBlockRegex.exec(text)) !== null) {
+                const before = text.substring(lastIndex, match.index);
+                if (before) parts.push(escapeHtml(before));
+                const lang = match[1] || 'text';
+                const code = match[2];
+                parts.push(`
+                    <div class="code-block-wrapper">
+                        <div class="code-header">
+                            <span>${escapeHtml(lang)}</span>
+                            <button class="copy-code-btn"><i class="far fa-copy"></i> Copy</button>
+                        </div>
+                        <pre class="code-block">${escapeHtml(code)}</pre>
+                    </div>
+                `);
+                lastIndex = match.index + match[0].length;
+            }
+            const remaining = text.substring(lastIndex);
+            if (remaining) parts.push(escapeHtml(remaining));
+            return parts.join('');
         }
 
         function escapeHtml(text) {
@@ -815,153 +886,89 @@
             return div.innerHTML;
         }
 
-        function formatBytes(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-            else return (bytes / 1048576).toFixed(1) + ' MB';
-        }
-
-        function handleDownload(fileDataStr) {
-            try {
-                const parsed = JSON.parse(fileDataStr);
-                if (parsed.content) {
-                    downloadTextFile(parsed.filename || 'generated.txt', parsed.content);
-                } else {
-                    downloadTextFile('tool_output.txt', fileDataStr);
-                }
-            } catch (e) {
-                downloadTextFile('generated.txt', fileDataStr);
-            }
-        }
-
         function downloadTextFile(filename, content) {
-            const blob = new Blob([content], { type: 'text/plain' });
+            const blob = new Blob([content], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
-            document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
+        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
         function autoResizeTextarea() {
             messageInput.style.height = 'auto';
             messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
         }
 
-        // ---------- FILE HANDLING ----------
+        // ---------- FILE ----------
         function handleFiles(files) {
             currentFiles = Array.from(files);
             renderFilePreviews();
         }
-
         function renderFilePreviews() {
             filePreviewContainer.innerHTML = '';
-            currentFiles.forEach((file, index) => {
-                const preview = document.createElement('div');
-                preview.className = 'file-preview';
-                preview.innerHTML = `<i class="fas fa-file"></i> ${escapeHtml(file.name)} <button class="remove-file" data-index="${index}">✕</button>`;
-                filePreviewContainer.appendChild(preview);
+            currentFiles.forEach((f,i) => {
+                const div = document.createElement('div');
+                div.className = 'file-preview';
+                div.innerHTML = `<i class="fas fa-file"></i> ${escapeHtml(f.name)} <button class="remove-file" data-index="${i}">✕</button>`;
+                filePreviewContainer.appendChild(div);
             });
-            document.querySelectorAll('.remove-file').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = parseInt(e.target.getAttribute('data-index'));
-                    currentFiles.splice(idx, 1);
+            document.querySelectorAll('.remove-file').forEach(b => {
+                b.addEventListener('click', (e) => {
+                    currentFiles.splice(e.target.dataset.index,1);
                     renderFilePreviews();
-                    if (currentFiles.length === 0) fileInput.value = '';
                 });
             });
         }
+        function clearFiles() { currentFiles = []; filePreviewContainer.innerHTML = ''; fileInput.value = ''; }
 
-        function clearFiles() {
-            currentFiles = [];
-            filePreviewContainer.innerHTML = '';
-            fileInput.value = '';
-        }
-
-        // ---------- HISTORY MANAGEMENT ----------
+        // ---------- HISTORY ----------
         function loadChatHistory() {
             const stored = localStorage.getItem('chat_history');
-            if (stored) {
-                try { chatHistory = JSON.parse(stored); } catch(e){ chatHistory = []; }
-            }
+            chatHistory = stored ? JSON.parse(stored) : [];
             renderHistoryList();
         }
-
         function renderHistoryList() {
             historyList.innerHTML = '';
-            if (chatHistory.length === 0) {
-                historyList.innerHTML = '<div style="color:#777; padding:8px; text-align:center;">Belum ada riwayat</div>';
+            if (!chatHistory.length) {
+                historyList.innerHTML = '<div style="color:#777;padding:8px;">Belum ada riwayat</div>';
                 return;
             }
-            // Tampilkan terbaru di atas
-            const sorted = [...chatHistory].reverse();
-            sorted.forEach(item => {
+            [...chatHistory].reverse().forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
-                div.innerHTML = `
-                    <div class="history-title">${escapeHtml(item.title || 'Chat')}</div>
-                    <div class="history-preview">${escapeHtml(item.preview || '')}</div>
-                `;
-                div.addEventListener('click', () => loadChatFromHistory(item.id));
+                div.innerHTML = `<div class="history-title">${escapeHtml(item.title||'')}</div><div class="history-preview">${escapeHtml(item.preview||'')}</div>`;
+                div.addEventListener('click', ()=> alert('Load chat dari history (coming soon)'));
                 historyList.appendChild(div);
             });
         }
-
         function addToChatHistory(userMsg, assistantMsg) {
             const id = Date.now();
-            const title = userMsg.substring(0, 30) + (userMsg.length > 30 ? '...' : '');
-            const preview = assistantMsg.substring(0, 40);
-            chatHistory.push({ id, title, preview, timestamp: id });
-            // Batasi 30 item
+            chatHistory.push({ id, title: userMsg.substring(0,30), preview: assistantMsg.substring(0,40) });
             if (chatHistory.length > 30) chatHistory.shift();
             localStorage.setItem('chat_history', JSON.stringify(chatHistory));
             renderHistoryList();
         }
-
-        function loadChatFromHistory(id) {
-            // Fitur sederhana: alert, bisa dikembangkan lebih lanjut
-            alert('Fitur load chat dari history akan datang di update berikutnya.');
-        }
-
         function clearAllHistory() {
             chatHistory = [];
             localStorage.removeItem('chat_history');
             renderHistoryList();
         }
-
-        function saveCurrentSession() {
-            localStorage.setItem('current_messages', JSON.stringify(messages));
-        }
-
+        function saveCurrentSession() { localStorage.setItem('current_messages', JSON.stringify(messages)); }
         function loadMessagesFromStorage() {
             const stored = localStorage.getItem('current_messages');
-            if (stored) {
-                try { messages = JSON.parse(stored); } catch(e){ messages = []; }
-            }
+            if (stored) try { messages = JSON.parse(stored); } catch(e){}
         }
-
         function newChat() {
-            // Batalkan stream jika sedang berjalan
-            if (currentStreamReader) {
-                currentStreamReader.cancel();
-                currentStreamReader = null;
-            }
             messages = [];
             addWelcomeMessage();
             saveCurrentSession();
             clearFiles();
-            isLoading = false;
-            sendBtn.disabled = false;
         }
 
-        // ---------- SYNC CONFIG TO STORAGE ----------
+        // ---------- SYNC ----------
         function syncConfigToStorage() {
             localStorage.setItem('model_id', modelId);
             localStorage.setItem('temp', temperature);
@@ -971,149 +978,77 @@
             updateHeaderBadge();
         }
 
-        // ---------- API CALL (to Vercel backend) ----------
+        // ---------- API CALL ----------
         async function sendMessage() {
             const userText = messageInput.value.trim();
             if (!userText && currentFiles.length === 0) return;
             if (isLoading) return;
 
-            // Build user message content
             let userContent = userText;
-            if (currentFiles.length > 0) {
-                const fileNames = currentFiles.map(f => f.name).join(', ');
-                userContent += `\n[File terlampir: ${fileNames}]`;
-            }
+            if (currentFiles.length) userContent += `\n[File: ${currentFiles.map(f=>f.name).join(', ')}]`;
 
-            const userMsg = {
-                role: 'user',
-                content: userContent,
-                timestamp: Date.now(),
-                file: currentFiles.length > 0 ? currentFiles[0] : null  // simpan file pertama sbg referensi
-            };
+            const userMsg = { role: 'user', content: userContent, timestamp: Date.now(), file: currentFiles[0] };
             messages.push(userMsg);
             appendMessageToDOM(userMsg);
-            
-            // Reset input
             messageInput.value = '';
             autoResizeTextarea();
             clearFiles();
-            
-            // Placeholder untuk assistant
-            const assistantPlaceholder = {
-                role: 'assistant',
-                content: '',
-                reasoning: '',
-                timestamp: Date.now(),
-                tool_calls: []
-            };
+
+            const assistantPlaceholder = { role: 'assistant', content: '', timestamp: Date.now(), tool_calls: [] };
             messages.push(assistantPlaceholder);
             const assistantMsgDiv = document.createElement('div');
             assistantMsgDiv.className = 'message assistant';
             assistantMsgDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
             chatContainer.appendChild(assistantMsgDiv);
             scrollToBottom();
-            
+
             isLoading = true;
             sendBtn.disabled = true;
-            
+
             try {
-                // Siapkan messages untuk API
-                const apiMessages = [];
-                if (systemPrompt) {
-                    apiMessages.push({ role: 'system', content: systemPrompt });
-                }
-                // Ambil semua pesan kecuali placeholder terakhir
-                for (let i = 0; i < messages.length - 1; i++) {
-                    apiMessages.push({ role: messages[i].role, content: messages[i].content });
-                }
-                
+                const apiMessages = systemPrompt ? [{ role: 'system', content: systemPrompt }] : [];
+                for (let i=0; i<messages.length-1; i++) apiMessages.push({ role: messages[i].role, content: messages[i].content });
+
                 const requestBody = {
                     model: modelId,
                     messages: apiMessages,
-                    temperature: temperature,
-                    top_p: topP,
-                    max_tokens: maxTokens,
+                    temperature, top_p: topP, max_tokens: maxTokens,
                     stream: true,
                     chat_template_kwargs: { thinking: thinkingMode }
                 };
-                
                 if (toolsMode) {
                     requestBody.tools = [
-                        {
-                            type: "function",
-                            function: {
-                                name: "generate_text_file",
-                                description: "Generate a text file with given content and filename",
-                                parameters: {
-                                    type: "object",
-                                    properties: {
-                                        filename: { type: "string", description: "Name of the file" },
-                                        content: { type: "string", description: "Content to write" }
-                                    },
-                                    required: ["filename", "content"]
-                                }
-                            }
-                        },
-                        {
-                            type: "function",
-                            function: {
-                                name: "describe_harry_potter_character",
-                                description: "Returns information and images of Harry Potter characters.",
-                                parameters: {
-                                    type: "object",
-                                    properties: {
-                                        name: {
-                                            type: "string",
-                                            enum: ["Harry James Potter","Hermione Jean Granger","Ron Weasley","Fred Weasley","George Weasley","Bill Weasley","Percy Weasley","Charlie Weasley","Ginny Weasley","Molly Weasley","Arthur Weasley","Neville Longbottom","Luna Lovegood","Draco Malfoy","Albus Percival Wulfric Brian Dumbledore","Minerva McGonagall","Remus Lupin","Rubeus Hagrid","Sirius Black","Severus Snape","Bellatrix Lestrange","Lord Voldemort","Cedric Diggory","Nymphadora Tonks","James Potter"]
-                                        }
-                                    },
-                                    required: ["name"]
-                                }
-                            }
-                        }
+                        { type: "function", function: { name: "generate_text_file", description: "Generate a text file", parameters: { type: "object", properties: { filename: {type:"string"}, content: {type:"string"} }, required: ["filename","content"] } } }
                     ];
                     requestBody.tool_choice = "auto";
                 }
-                
+
                 const response = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type':'application/json'},
                     body: JSON.stringify(requestBody)
                 });
-                
+
                 if (!response.ok) {
-                    let errorMsg = `HTTP ${response.status}`;
-                    try {
-                        const errData = await response.json();
-                        errorMsg = errData.error || errorMsg;
-                    } catch (e) {
-                        const text = await response.text();
-                        errorMsg = text.substring(0, 100);
-                    }
-                    throw new Error(errorMsg);
+                    let err = await response.text();
+                    throw new Error(err.substring(0,100));
                 }
-                
-                // Streaming response
+
                 const reader = response.body.getReader();
-                currentStreamReader = reader;
                 const decoder = new TextDecoder();
-                let accumulatedContent = '';
-                let accumulatedReasoning = '';
+                let fullContent = '';
                 let toolCalls = [];
-                
-                // Ganti loading indicator dengan konten
+
                 assistantMsgDiv.innerHTML = '';
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'message-content';
                 assistantMsgDiv.appendChild(contentDiv);
-                
+
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-                    
                     const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n').filter(line => line.trim() !== '');
-                    
+                    const lines = chunk.split('\n').filter(l=>l.trim());
                     for (const line of lines) {
                         if (line.startsWith('data: ')) {
                             const data = line.slice(6);
@@ -1121,143 +1056,88 @@
                             try {
                                 const json = JSON.parse(data);
                                 const delta = json.choices[0]?.delta;
-                                if (delta?.reasoning_content) accumulatedReasoning += delta.reasoning_content;
-                                if (delta?.content) accumulatedContent += delta.content;
-                                if (delta?.tool_calls) {
-                                    // Merge tool calls (sederhana)
-                                    toolCalls = delta.tool_calls;
-                                }
-                                
-                                // Update tampilan
-                                let displayHtml = '';
-                                if (accumulatedReasoning) {
-                                    displayHtml += `<span class="thinking-badge"><i class="fas fa-brain"></i> THINKING</span>`;
-                                }
-                                displayHtml += escapeHtml(accumulatedContent);
-                                if (toolCalls.length > 0) {
+                                if (delta?.content) fullContent += delta.content;
+                                if (delta?.tool_calls) toolCalls = delta.tool_calls;
+
+                                // Render live (parsing sederhana)
+                                const { cleanedContent, reasoning } = extractThinking(fullContent);
+                                let html = reasoning ? createCollapsibleThinkBlock(reasoning) : '';
+                                html += formatContentWithCodeBlocks(cleanedContent);
+                                if (toolCalls.length) {
                                     toolCalls.forEach(tc => {
                                         const args = tc.function?.arguments;
-                                        let fileData = '';
-                                        try {
-                                            fileData = JSON.stringify(args || {});
-                                        } catch(e) { fileData = '{}'; }
-                                        displayHtml += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-file='${escapeHtml(fileData)}'>${escapeHtml(tc.function?.name || 'tool')} · Download</span></div>`;
+                                        let file = {};
+                                        try { file = JSON.parse(args || '{}'); } catch(e){}
+                                        if (file.filename && file.content) {
+                                            html += `<div class="generated-file-link"><i class="fas fa-file-code"></i> <span class="download-link" data-filename="${escapeHtml(file.filename)}" data-content="${escapeHtml(file.content)}">📄 ${escapeHtml(file.filename)} · Download</span></div>`;
+                                        }
                                     });
                                 }
-                                contentDiv.innerHTML = displayHtml;
+                                contentDiv.innerHTML = html;
+                                // Re-attach listeners untuk think & copy dalam streaming (bisa menggunakan event delegation nanti)
                                 scrollToBottom();
-                            } catch (e) {
-                                // Abaikan chunk yang bukan JSON
-                            }
+                            } catch(e){}
                         }
                     }
                 }
-                
-                // Selesai streaming
-                messages[messages.length - 1] = {
-                    role: 'assistant',
-                    content: accumulatedContent,
-                    reasoning: accumulatedReasoning,
-                    tool_calls: toolCalls,
-                    timestamp: Date.now()
-                };
-                
-                // Tambahkan meta waktu
-                const metaDiv = document.createElement('div');
-                metaDiv.className = 'message-meta';
-                metaDiv.textContent = `NVIDIA NIM · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-                assistantMsgDiv.appendChild(metaDiv);
-                
-                // Re-attach download events
-                assistantMsgDiv.querySelectorAll('.download-link').forEach(el => {
-                    el.addEventListener('click', (e) => {
-                        const fileData = e.currentTarget.getAttribute('data-file');
-                        handleDownload(fileData);
+
+                messages[messages.length-1] = { role: 'assistant', content: fullContent, tool_calls: toolCalls, timestamp: Date.now() };
+                assistantMsgDiv.innerHTML += `<div class="message-meta">NVIDIA NIM · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+                // Re-attach events
+                assistantMsgDiv.querySelectorAll('.think-header').forEach(h => {
+                    h.addEventListener('click', () => {
+                        const content = h.nextElementSibling;
+                        h.classList.toggle('collapsed');
+                        content.classList.toggle('collapsed');
                     });
                 });
-                
+                assistantMsgDiv.querySelectorAll('.copy-code-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const wrapper = e.target.closest('.code-block-wrapper');
+                        const code = wrapper.querySelector('.code-block').textContent;
+                        await navigator.clipboard.writeText(code);
+                        btn.classList.add('copied');
+                        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            btn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                        }, 2000);
+                    });
+                });
+                assistantMsgDiv.querySelectorAll('.download-link').forEach(el => {
+                    el.addEventListener('click', () => downloadTextFile(el.dataset.filename, el.dataset.content));
+                });
+
                 saveCurrentSession();
-                addToChatHistory(userText, accumulatedContent);
-                
+                addToChatHistory(userText, fullContent);
             } catch (error) {
                 assistantMsgDiv.innerHTML = `<div class="message-content" style="color:#FF5500;">Error: ${escapeHtml(error.message)}</div>`;
-                messages.pop(); // hapus placeholder
+                messages.pop();
             } finally {
                 isLoading = false;
                 sendBtn.disabled = false;
-                currentStreamReader = null;
             }
         }
 
         // ---------- EVENT LISTENERS ----------
-        hamburgerBtn.addEventListener('click', () => {
-            sidebar.classList.add('open');
-            overlay.classList.add('open');
-        });
-        
-        closeSidebarBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-        
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-        }
-        
+        document.getElementById('hamburgerBtn').addEventListener('click', ()=> { sidebar.classList.add('open'); overlay.classList.add('open'); });
+        document.getElementById('closeSidebarBtn').addEventListener('click', ()=> { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+        overlay.addEventListener('click', ()=> { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
         sendBtn.addEventListener('click', sendMessage);
-        
-        messageInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        
-        thinkingModeBtn.addEventListener('click', () => {
-            thinkingMode = !thinkingMode;
-            thinkingModeBtn.classList.toggle('active', thinkingMode);
-        });
-        
-        toolsModeBtn.addEventListener('click', () => {
-            toolsMode = !toolsMode;
-            toolsModeBtn.classList.toggle('active', toolsMode);
-        });
-        
-        uploadFileBtn.addEventListener('click', () => fileInput.click());
-        
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-        
-        // Config inputs
-        modelIdInput.addEventListener('input', (e) => {
-            modelId = e.target.value;
-            syncConfigToStorage();
-        });
-        temperatureInput.addEventListener('input', (e) => {
-            temperature = parseFloat(e.target.value);
-            syncConfigToStorage();
-        });
-        topPInput.addEventListener('input', (e) => {
-            topP = parseFloat(e.target.value);
-            syncConfigToStorage();
-        });
-        maxTokensInput.addEventListener('input', (e) => {
-            maxTokens = parseInt(e.target.value);
-            syncConfigToStorage();
-        });
-        systemPromptInput.addEventListener('input', (e) => {
-            systemPrompt = e.target.value;
-            syncConfigToStorage();
-        });
-        
-        newChatSidebarBtn.addEventListener('click', () => {
-            newChat();
-            closeSidebar();
-        });
-        newChatHeaderBtn.addEventListener('click', newChat);
-        clearHistoryBtn.addEventListener('click', clearAllHistory);
-        
-        // Mulai
+        messageInput.addEventListener('keydown', (e) => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        thinkingModeBtn.addEventListener('click', ()=> { thinkingMode = !thinkingMode; thinkingModeBtn.classList.toggle('active', thinkingMode); });
+        toolsModeBtn.addEventListener('click', ()=> { toolsMode = !toolsMode; toolsModeBtn.classList.toggle('active', toolsMode); });
+        uploadFileBtn.addEventListener('click', ()=> fileInput.click());
+        fileInput.addEventListener('change', (e)=> handleFiles(e.target.files));
+        modelIdInput.addEventListener('input', (e)=> { modelId = e.target.value; syncConfigToStorage(); });
+        temperatureInput.addEventListener('input', (e)=> { temperature = parseFloat(e.target.value); syncConfigToStorage(); });
+        topPInput.addEventListener('input', (e)=> { topP = parseFloat(e.target.value); syncConfigToStorage(); });
+        maxTokensInput.addEventListener('input', (e)=> { maxTokens = parseInt(e.target.value); syncConfigToStorage(); });
+        systemPromptInput.addEventListener('input', (e)=> { systemPrompt = e.target.value; syncConfigToStorage(); });
+        document.getElementById('newChatSidebarBtn').addEventListener('click', ()=> { newChat(); sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+        document.getElementById('newChatHeaderBtn').addEventListener('click', newChat);
+        document.getElementById('clearHistoryBtn').addEventListener('click', clearAllHistory);
+
         init();
     })();
 </script>
